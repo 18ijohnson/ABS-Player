@@ -1,118 +1,80 @@
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextComponent, View } from 'react-native';
 
+import SplashScreen from './components/SplashScreen'
+import LoginScreen from './components/LoginScreen'
+import ServerSetupScreen from './components/ServerSetupScreen';
+import HomeScreen from './components/HomeScreen';
+
+import './global'
+
 export default function App() {
-  const [URL, setURL] = useState("https://abs.isaac.one")
+    const Stack = createNativeStackNavigator()
 
-  const [status, setStatus] = useState("")
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [userID, setUserID] = useState("")
-  const [userToken, setUserToken] = useState("")
-  const [libraries, setLibraries] = useState([])
-  const [libraryItems, setLibraryItems] = useState([])
+//   async function getLibraries(token) {
+//     let newLibraries = []
 
-  async function getStatus() {
-    return fetch(`${URL}/status`)
-      .then(response => response.json())
-      .then(json => `Initialized: ${json.isInit}\nLanguage: ${json.language}`)
-      .then(string => setStatus(string));
-  };
+//     let response = await fetch(`${URL}/api/libraries`, {
+//       method: 'GET',
+//       headers: {
+//         "Authorization": `Bearer ${token}`
+//       }
+//     })
 
-  async function getLogin() {
-    let body = {"username": username, "password": password}
+//     response = await response.json()
 
-    let response = await fetch(`${URL}/login`, {
-      method: 'POST', 
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
+//     response.libraries.forEach(library => {
+//       newLibraries.push(library.name)
+//     });
 
-    response = await response.json()
+//     setLibraries(newLibraries.join('\r\n'))
+//     getLibraryItems(token, response.libraries[0].id)
+//   }
 
-    setUserID(response.user.id)
-    setUserToken(response.user.token)
+//   async function getLibraryItems(token, libraryID) {
+//     let items = []
 
-    getLibraries(response.user.token)
-  }
+//     let response = await fetch(`${URL}/api/libraries/${libraryID}/items`, {
+//       method: 'GET',
+//       headers: {
+//         "Authorization": `Bearer ${token}`
+//       }
+//     }).then(response => response.json())
+//       .then(json => { return json })
 
-  async function getLibraries(token) {
-    let newLibraries = []
+//     response.results.forEach(result => {
+//       items.push(result.media.metadata.title)
+//     })
 
-    let response = await fetch(`${URL}/api/libraries`, {
-      method: 'GET',
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
+//     setLibraryItems(items.join('\r\n'))
 
-    response = await response.json()
-
-    response.libraries.forEach(library => {
-      newLibraries.push(library.name)
-    });
-
-    setLibraries(newLibraries.join('\r\n'))
-    getLibraryItems(token, response.libraries[0].id)
-  }
-
-  async function getLibraryItems(token, libraryID) {
-    let items = []
-
-    let response = await fetch(`${URL}/api/libraries/${libraryID}/items`, {
-      method: 'GET',
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    }).then(response => response.json())
-      .then(json => { return json })
-
-    response.results.forEach(result => {
-      items.push(result.media.metadata.title)
-    })
-
-    setLibraryItems(items.join('\r\n'))
-
-  }
+//   }
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{title: 'Welcome'}}
+            name="Splash"
+            component={SplashScreen}
         />
-        <Stack.Screen 
-          name="Profile" 
-          component={ProfileScreen} 
+        <Stack.Screen
+            name="ServerSetup"
+            component={ServerSetupScreen}
+        />
+        <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+        />
+        <Stack.Screen
+            name='Home'
+            component={HomeScreen}
         />
       </Stack.Navigator>
-      <View style={styles.container}>
-        <h1 style={styles.header}>Server</h1>
-        <label htmlFor='ip'>Server URL:</label>
-        <input type='text' id='ip' name='ip' value={URL} onChange={event => setURL(event.target.value)}></input>
-        <button onClick={getStatus}>Check Status</button>
-        <Text>{status}</Text>
-
-        <h1 style={styles.header}>Login</h1>
-        <label htmlFor="username">Username:</label>
-        <input type="text" id="username" name="username" value={username} onChange={event => setUsername(event.target.value)}></input>
-        <label htmlFor="pwd">Password:</label>
-        <input type="password" id="pwd" name="pwd" value={password} onChange={event => setPassword(event.target.value)}></input>
-        <button onClick={getLogin}>Login</button>
-        <Text>ID: {userID}</Text>
-        <Text>Token: {userToken}</Text>
-
-        <h1 style={styles.header}>Libraries</h1>
-        <Text>{libraries}</Text>
-
-        <h1 style={styles.header}>Items</h1>
-        <Text>{libraryItems}</Text>
-      </View>
     </NavigationContainer>
   );
 }
