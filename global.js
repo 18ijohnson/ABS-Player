@@ -3,6 +3,8 @@ import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
 export async function updateLibraries() {
+    const URL = storage.getString('serverURL')
+
     const userString = storage.getString('user')
     const userJSON = JSON.parse(userString)
 
@@ -11,10 +13,12 @@ export async function updateLibraries() {
         headers: {
         "Authorization": `Bearer ${userJSON.token}`
         }
-    }).then(response => response.json())
-    .then(json => console.log(json))
+    })
+    .then(response => response.json())
+    .then(json => json.libraries)
 
-    console.log(libraries)
+    storage.set('libraries', JSON.stringify(libraries))
+    storage.set('librariesUpdated', Date.now().toString())
 }
 
 

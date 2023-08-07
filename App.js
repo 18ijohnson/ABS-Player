@@ -1,9 +1,6 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextComponent, View } from 'react-native';
 
 import SplashScreen from './components/SplashScreen'

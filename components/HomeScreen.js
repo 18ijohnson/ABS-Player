@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 
 import { updateLibraries } from '../global'
+import LibrarySelector from './LibrarySelector.js'
 
 export default function HomeScreen({navigation}) {
 
@@ -9,15 +10,15 @@ export default function HomeScreen({navigation}) {
 
     return (
     <View style={styles.container}>
-        <Text>Home</Text>
-        <button onClick={updateLibraries}>Update Libraries</button>
+        <LibrarySelector/>
+        {/* <button onClick={updateLibraries}>Update Libraries</button> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: 'left',
     justifyContent: 'center',
     padding: 24,
     fontFamily: 'sans-serif'
